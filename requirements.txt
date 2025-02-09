@@ -12,3 +12,4 @@ streamlit
 pandas
 numpy
 odfpy2
+re
