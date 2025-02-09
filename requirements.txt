@@ -1,0 +1,14 @@
+streamlit
+torch
+transformers
+streamlit
+pyexcel-ods3
+requests
+pytz
+pandas-ods-reader
+reportlab
+beautifulsoup4
+streamlit
+pandas
+numpy
+odfpy2
