@@ -1,7 +1,4 @@
 import streamlit as st
-import pandas as pd
-import bisect
-from io import BytesIO
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -11,8 +8,7 @@ URL = "https://www.ireland.ie/en/uae/abudhabi/services/visas/weekly-decision-rep
 def get_latest_report():
     response = requests.get(URL)
     if response.status_code != 200:
-        print("Failed to fetch the webpage")
-        return None
+        return None, "Failed to fetch the webpage"
 
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -24,6 +20,7 @@ def get_latest_report():
 
     latest_date = None
     latest_link = None
+    latest_report_name = None
 
     for link in links:
         match = pattern.search(link.text)
@@ -31,14 +28,22 @@ def get_latest_report():
             report_date = match.group(2)  # Extract the end date
             if latest_date is None or report_date > latest_date:
                 latest_date = report_date
+                latest_report_name = link.text.strip()
                 latest_link = link['href']
 
     if latest_link:
-        print(f"Latest report URL: {latest_link}")
-        return latest_link
+        return latest_report_name, latest_link
     else:
-        print("No reports found.")
-        return None
+        return None, "No reports found"
 
-latest_report_url = get_latest_report()
+# Streamlit UI
+st.title("🇦🇪 Abu Dhabi Visa Decision Reports")
+st.write("Fetching the latest visa decision report dynamically.")
 
+latest_report, report_url = get_latest_report()
+
+if latest_report:
+    st.success(f"**Latest Report:** {latest_report}")
+    st.markdown(f"[📥 Download Report]({report_url})", unsafe_allow_html=True)
+else:
+    st.error(report_url)
