@@ -178,7 +178,12 @@ def search_application(application_number: str, df: pd.DataFrame):
                          "Decision": row["Decision"], "Difference": n - query_int})
         if rows:
             st.subheader("Nearest Application Numbers")
-            st.table(pd.DataFrame(rows))
+            header = "| Position | Application Number | Decision | Difference |\n|---|---|---|---|"
+            body = "\n".join(
+                f"| {r['Position']} | {r['Application Number']} | {r['Decision']} | {r['Difference']} |"
+                for r in rows
+            )
+            st.markdown(f"{header}\n{body}")
         else:
             st.info("No nearest application numbers found.")
     except ValueError:
